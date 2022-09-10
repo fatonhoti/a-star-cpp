@@ -1,2 +1,4 @@
-﻿  main.cpp
+﻿  Pathfinder.cpp
+D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(37,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(37,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   pathfinder.vcxproj -> D:\Documents\Programming\pathfinder\pathfinder\Debug\pathfinder.exe
