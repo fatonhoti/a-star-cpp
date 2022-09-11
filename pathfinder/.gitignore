@@ -308,5 +308,3 @@ examples/*/*.xml
 *.exe
 *.out
 *.app
-
-# -----------
