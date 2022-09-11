@@ -9,10 +9,15 @@
 struct Node {
 	int x, y;
 	char tile;
-	bool operator <(const Node& rhs) const
-	{
-		return (x < rhs.x) || (!(rhs.x < x) && y < rhs.y);
+	float gScore;
+	float fScore;
+	Node* parent;
+	bool inOpenSet = false;
+	bool inClosedSet = false;
+	bool operator<(const Node& rhs) const {
+		return fScore > rhs.fScore;
 	}
+	friend std::ostream& operator<<(std::ostream& os, const Node& n);
 };
 
 class Pathfinder {
@@ -22,26 +27,26 @@ private:
 	int width;
 	int height;
 	std::string title;
-	std::vector<Node> nodes;
-	std::vector<Node> path;
+	std::vector<Node*> nodes;
+	std::vector<Node*> path;
 	sf::RenderWindow window;
-	Node startNode;
-	Node endNode;
+	Node* startNode;
+	Node* endNode;
 	std::tuple<int, int> deHighlightedTile;
 	std::tuple<int, int> highlightedTile;
 public:
 	void loadMap();
 	sf::Color getColor(char);
-	Node getNode(int, int);
-	void drawNode(Node);
+	Node* getNode(int, int);
+	void drawNode(Node*);
 	void drawNodes();
-	float distance(Node, Node);
-	Node getNeighbour(int, int);
-	std::vector<Node> getNeighbours(Node);
-	std::vector<Node> reconstructPath(std::map<Node, Node>, Node);
+	float distance(Node*, Node*);
+	Node* getNeighbour(int, int);
+	std::vector<Node*> getNeighbours(Node*);
+	std::vector<Node*> reconstructPath(Node*);
 	void setPath(std::vector<Node>);
 	void resetPath();
-	std::vector<Node> astar(Node, Node);
+	std::vector<Node*> astar(Node*, Node*);
 	void run();
 	Pathfinder();
 };

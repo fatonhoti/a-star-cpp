@@ -4,6 +4,11 @@
 #include <set>
 #include <queue>
 
+std::ostream& operator<<(std::ostream& os, const Node& n)
+{
+	return os << "(" << n.x << ", " << n.y << ", " << n.tile << ")\n";
+}
+
 void Pathfinder::loadMap() {
 	// TODO: Load map from .txt file in the future
 	std::string tiles = "";
@@ -11,27 +16,30 @@ void Pathfinder::loadMap() {
 	tiles += "#R.....#......#....#";
 	tiles += "####...#.######....#";
 	tiles += "#..................#";
-	tiles += "#...###.....##.....#";
+	tiles += "#######.....##.....#";
 	tiles += "#............####..#";
-	tiles += "#.......###..#.....#";
-	tiles += "#..................#";
-	tiles += "#....####....###...#";
-	tiles += "#.......#..........#";
+	tiles += "#.#.....######.....#";
+	tiles += "#.#................#";
+	tiles += "#.#..#######.###...#";
+	tiles += "#.#.....#..........#";
 	tiles += "#...##.####...###..#";
 	tiles += "#....#..#.......##.#";
-	tiles += "#.......#...#####..#";
-	tiles += "#..................#";
+	tiles += "#.##....#...#####..#";
+	tiles += "#..#...............#";
 	tiles += "####################";
 	for (int y = 0; y < height / tileHeight; y++) {
 		for (int x = 0; x < width / tileWidth; x++) {
 			char tile = tiles[y * (width / tileWidth) + x];
-			nodes.push_back(Node{ x, y, tile });
+			Node* n = new Node();
+			n->x = x;
+			n->y = y;
+			n->tile = tile;
+			nodes.push_back(n);
 		}
 	}
 }
 
 sf::Color Pathfinder::getColor(char tile) {
-	// Guaranteed one match
 	return std::map<char, sf::Color>{
 		{'#', sf::Color::Black},
 		{ '.', sf::Color::White },
@@ -40,20 +48,20 @@ sf::Color Pathfinder::getColor(char tile) {
 		{ 'O', sf::Color::Red }}.at(tile);
 }
 
-Node Pathfinder::getNode(int x, int y) {
+Node* Pathfinder::getNode(int x, int y) {
 	return nodes[y * (width / tileWidth) + x];
 }
 
-void Pathfinder::drawNode(Node node) {
+void Pathfinder::drawNode(Node* node) {
 	sf::RectangleShape rect(sf::Vector2f((float)tileWidth - 2, (float)tileHeight - 2));
-	rect.setPosition(node.x * tileWidth, node.y * tileHeight);
-	rect.setFillColor(getColor(node.tile));
-	if (node.tile != '#' && std::get<0>(highlightedTile) == node.x && std::get<1>(highlightedTile) == node.y) {
+	rect.setPosition(node->x * tileWidth, node->y * tileHeight);
+	rect.setFillColor(getColor(node->tile));
+	if (node->tile != '#' && std::get<0>(highlightedTile) == node->x && std::get<1>(highlightedTile) == node->y) {
 		// Highlight tile!
 		rect.setOutlineColor(sf::Color::Red);
 		rect.setOutlineThickness(2);
 	}
-	else if (std::get<0>(deHighlightedTile) == node.x && std::get<1>(deHighlightedTile) == node.y) {
+	else if (std::get<0>(deHighlightedTile) == node->x && std::get<1>(deHighlightedTile) == node->y) {
 		// Dehighlight tile!
 		rect.setOutlineThickness(0);
 	}
@@ -64,47 +72,47 @@ void Pathfinder::drawNodes() {
 	for (auto& node : nodes) drawNode(node);
 }
 
-float Pathfinder::distance(Node nodeA, Node nodeB) {
-	return std::sqrt(std::pow(nodeA.x - nodeB.x, 2) + std::pow(nodeA.y - nodeB.y, 2));
+float Pathfinder::distance(Node* nodeA, Node* nodeB) {
+	return std::sqrt(std::pow(nodeA->x - nodeB->x, 2) + std::pow(nodeA->y - nodeB->y, 2));
 }
 
-Node Pathfinder::getNeighbour(int x, int y) {
+Node* Pathfinder::getNeighbour(int x, int y) {
 	return nodes[y * (width / tileWidth) + x];
 }
 
-std::vector<Node> Pathfinder::getNeighbours(Node node) {
-	int nodeX = node.x;
-	int nodeY = node.y;
-	std::vector<Node> neighbours;
+std::vector<Node*> Pathfinder::getNeighbours(Node* node) {
+	int nodeX = (*node).x;
+	int nodeY = (*node).y;
+	std::vector<Node*> neighbours;
 
 	// Left?
 	if (0 < nodeX - 1 && nodeX - 1 < (width / tileWidth)) {
-		Node nb = getNeighbour(nodeX - 1, nodeY);
-		if (nb.tile != '#') {
+		Node* nb = getNeighbour(nodeX - 1, nodeY);
+		if ((*nb).tile != '#') {
 			neighbours.push_back(nb);
 		}
 	}
 
 	// Right?
 	if (0 < nodeX + 1 && nodeX + 1 < (width / tileWidth)) {
-		Node nb = getNeighbour(nodeX + 1, nodeY);
-		if (nb.tile != '#') {
+		Node* nb = getNeighbour(nodeX + 1, nodeY);
+		if ((*nb).tile != '#') {
 			neighbours.push_back(nb);
 		}
 	}
 	
 	// Top?
 	if (0 < nodeY - 1 && nodeY - 1 < (height / tileHeight)) {
-		Node nb = getNeighbour(nodeX, nodeY - 1);
-		if (nb.tile != '#') {
+		Node* nb = getNeighbour(nodeX, nodeY - 1);
+		if ((*nb).tile != '#') {
 			neighbours.push_back(nb);
 		}
 	}
 	
 	// Bottom?
 	if (0 < nodeY + 1 && nodeY + 1 < (height / tileHeight)) {
-		Node nb = getNeighbour(nodeX, nodeY + 1);
-		if (nb.tile != '#') {
+		Node* nb = getNeighbour(nodeX, nodeY + 1);
+		if ((*nb).tile != '#') {
 			neighbours.push_back(nb);
 		}
 	}
@@ -114,70 +122,74 @@ std::vector<Node> Pathfinder::getNeighbours(Node node) {
 
 void Pathfinder::resetPath() {
 	for (auto& node : nodes) {
-		if (node.tile != '#') {
-			node.tile = '.';
+		if (node->tile != '#') {
+			node->tile = '.';
+			node->fScore = 0;
+			node->gScore = 0;
+			node->parent = nullptr;
+			node->inOpenSet = false;
+			node->inClosedSet = false;
 		}
 	}
 	drawNodes();
 }
 
-std::vector<Node> Pathfinder::reconstructPath(std::map<Node, Node> cameFrom, Node current) {
+std::vector<Node*> Pathfinder::reconstructPath(Node* current) {
 	std::cout << "Reconstructing path...\n";
-	current.tile = 'R';
-	nodes[current.y * (width / tileWidth) + current.x] = current;
-	std::vector<Node> totalPath;
+	current->tile = 'R';
+	std::vector<Node*> totalPath;
 	totalPath.push_back(current);
-	while (cameFrom.find(current) != cameFrom.end()) {
-		current = cameFrom.at(current);
-		current.tile = 'P';
-		nodes[current.y * (width / tileWidth) + current.x] = current;
+	while (current->parent != nullptr) {
+		current = current->parent;
+		if (current->parent == nullptr) {
+			current->tile = 'O';
+		}
+		else {
+			current->tile = 'P';
+		}
 		totalPath.push_back(current);
 	}
-	current.tile = 'O';
-	nodes[current.y * (width / tileWidth) + current.x] = current;
 	return totalPath;
 }
 
-std::vector<Node> Pathfinder::astar(Node startNode, Node endNode) {
+std::vector<Node*> Pathfinder::astar(Node* startNode, Node* endNode) {
 
-	std::priority_queue<Node> openSet;
+	std::priority_queue<Node*> openSet;
 	openSet.push(startNode);
-	std::set<Node> closedSet;
-
-	std::map<Node, Node> cameFrom;
-
-	std::map<Node, float> gScore;
-	std::map<Node, float> fScore;
 	for (auto& node : nodes) {
-		if (node.tile == '#') continue;
-		if (node.x == startNode.x && node.y == startNode.y) {
-			gScore.insert({ startNode, 0 });
-			fScore.insert({ startNode, distance(startNode, endNode) });
+		if (node->tile == '#') continue;
+		if (node->x == startNode->x && node->y == startNode->y) {
+			startNode->gScore = 0;
+			startNode->fScore = startNode->gScore + distance(startNode, endNode);
 		}
 		else {
-			gScore.insert({ node, std::numeric_limits<float>::infinity() });
-			fScore.insert({ node, std::numeric_limits<float>::infinity() });
+			node->gScore = std::numeric_limits<float>::infinity();
+			node->fScore = std::numeric_limits<float>::infinity();
 		}
 	}
 
+
 	while (!openSet.empty()) {
 
-		Node current = openSet.top();
+		Node* current = openSet.top();
+		current->inClosedSet = true;
 		openSet.pop();
-		closedSet.insert(current);
 
-		if (current.x == endNode.x && current.y == endNode.y) {
-			return reconstructPath(cameFrom, current);
+		if (current->x == endNode->x && current->y == endNode->y) {
+			return reconstructPath(current);
 		}
 
 		for (auto& neighbour : getNeighbours(current)) {
-			float tentativeGScore = gScore.at(current) + distance(current, neighbour);
-			if (tentativeGScore < gScore.at(neighbour)) {
-				cameFrom.insert({ neighbour, current });
-				gScore.at(neighbour) = tentativeGScore;
-				fScore.at(neighbour) = tentativeGScore + distance(neighbour, endNode);
-				if (closedSet.find(neighbour) == closedSet.end()) {
+			if (neighbour->inClosedSet)
+				continue;
+			float tentativeGScore = current->gScore + distance(current, neighbour);
+			if (tentativeGScore < neighbour->gScore) {
+				neighbour->parent = current;
+				neighbour->gScore = tentativeGScore;
+				neighbour->fScore = tentativeGScore + distance(neighbour, endNode);
+				if (!neighbour->inOpenSet) {
 					openSet.push(neighbour);
+					neighbour->inOpenSet = true;
 				}
 			}
 		}
@@ -185,7 +197,7 @@ std::vector<Node> Pathfinder::astar(Node startNode, Node endNode) {
 	}
 
 	// No path found
-	return std::vector<Node>{};
+	return std::vector<Node*>{};
 
 }
 
@@ -216,16 +228,15 @@ void Pathfinder::run() {
 				if (event.mouseButton.button == sf::Mouse::Left) {
 					int x = event.mouseButton.x / tileHeight;
 					int y = event.mouseButton.y / tileWidth;
-					Node eNode = getNode(x, y);
-					if (eNode.tile != '#') {  // Make sure it isn't a wall
+					Node* eNode = getNode(x, y);
+					if (eNode->tile != '#') {  // Make sure it isn't a wall
 						this->endNode = eNode;
 						resetPath();
 						path = astar(startNode, endNode);
 						if (!path.empty()) {
 							std::cout << "Found path...\n";
-							startNode.tile = '.';
 							startNode = endNode;
-							startNode.tile = 'R';
+							startNode->tile = 'R';
 						}
 						else {
 							std::cout << "Failed to find a path...\n";

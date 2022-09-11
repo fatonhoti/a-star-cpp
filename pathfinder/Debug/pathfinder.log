@@ -1,26 +1,5 @@
 ﻿  Pathfinder.cpp
-D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(49,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(49,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(68,18): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\utility(190,54): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
-          with
-          [
-              _Ty=int
-          ]
-          and
-          [
-              _Ty2=float
-          ]
-D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(154): message : see reference to function template instantiation 'std::pair<const Node,float>::pair<Node&,int,0>(_Other1,_Other2 &&) noexcept' being compiled
-          with
-          [
-              _Other1=Node &,
-              _Other2=int
-          ]
-D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(154): message : see reference to function template instantiation 'std::pair<const Node,float>::pair<Node&,int,0>(_Other1,_Other2 &&) noexcept' being compiled
-          with
-          [
-              _Other1=Node &,
-              _Other2=int
-          ]
+D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(57,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(57,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(76,18): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
   pathfinder.vcxproj -> D:\Documents\Programming\pathfinder\pathfinder\Debug\pathfinder.exe
