@@ -1,5 +1,7 @@
 ﻿  Pathfinder.cpp
-D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(57,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(57,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(76,18): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(53,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(53,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Documents\Programming\pathfinder\pathfinder\Pathfinder.cpp(128,39): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+  main.cpp
+  Generating Code...
   pathfinder.vcxproj -> D:\Documents\Programming\pathfinder\pathfinder\Debug\pathfinder.exe
