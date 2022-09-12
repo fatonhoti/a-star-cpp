@@ -22,9 +22,6 @@ struct Node {
 	float gScore, fScore;
 	Node* parent;
 	bool hasBeenConsidered, hasBeenVisited;
-	bool operator>(const Node& rhs) const {
-		return fScore > rhs.fScore;
-	}
 	friend std::ostream& operator<<(std::ostream& os, const Node& n);
 };
 

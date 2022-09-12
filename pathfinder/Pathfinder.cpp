@@ -37,11 +37,11 @@ void Pathfinder::loadTileMap() {
 
 sf::Color Pathfinder::getColor(char tile) {
 	return std::map<char, sf::Color>{
-		{WALL, sf::Color::Black},
-		{EMPTY, sf::Color::White },
-		{ROBOT, sf::Color::Green },
-		{PATH, sf::Color::Magenta },
-		{CAMEFROM, sf::Color::Red }}.at(tile);
+		{WALL, sf::Color(32, 32, 32)},
+		{EMPTY, sf::Color(230, 230, 230)},
+		{ROBOT, sf::Color(0, 153, 0)},
+		{PATH, sf::Color(255, 204, 0)},
+		{CAMEFROM, sf::Color(128, 0, 0)}}.at(tile);
 }
 
 Node* Pathfinder::getNode(int x, int y) {
@@ -58,6 +58,12 @@ void Pathfinder::drawNode(Node* node) {
 		rect.setOutlineThickness(2);
 	}
 	window.draw(rect);
+	if (node->tile == ROBOT) {
+		sf::CircleShape circle(16);
+		circle.setPosition(node->x * tileWidth + 4, node->y * tileHeight + 4);
+		circle.setFillColor(sf::Color::Blue);
+		window.draw(circle);
+	}
 }
 
 void Pathfinder::drawNodes() {
@@ -144,9 +150,15 @@ std::vector<Node*> Pathfinder::reconstructPath(Node* current) {
 
 std::vector<Node*> Pathfinder::astar(Node* startNode, Node* endNode) {
 
+	struct greater {
+		bool operator()(const Node* a, const Node* b) {
+			return a->fScore > b->fScore;
+		}
+	};
+
 	// openSet stores the nodes which we might be interested in further looking at
 	// openSet is a min-pq for better performance when extracting node with minimum fScore
-	std::priority_queue<Node*> openSet;
+	std::priority_queue<Node*, std::vector<Node*>, greater> openSet;
 	for (auto& node : nodes) {
 		if (node->tile != WALL) {
 			node->gScore = std::numeric_limits<float>::infinity();
@@ -195,10 +207,6 @@ void Pathfinder::run() {
 
 	while (window.isOpen()) {
 
-		window.clear();
-		drawNodes();
-		window.display();
-
 		sf::Event event;
 		if (window.waitEvent(event)) {
 
@@ -235,6 +243,11 @@ void Pathfinder::run() {
 					}
 				}
 			}
+
+			window.clear(sf::Color(32, 32, 32));
+			drawNodes();
+			window.display();
+
 		}
 	}
 
