@@ -52,7 +52,7 @@ void Pathfinder::drawNode(Node* node) {
 	sf::RectangleShape rect(rectangleSize);
 	rect.setPosition(node->x * tileWidth, node->y * tileHeight);
 	rect.setFillColor(getColor(node->tile));
-	if (node->tile != WALL && highlightedTile.x == node->x && highlightedTile.y == node->y) {
+	if (node->tile != WALL && highlightedNode == node) {
 		// Highlight tile!
 		rect.setOutlineColor(sf::Color::Red);
 		rect.setOutlineThickness(2);
@@ -132,13 +132,12 @@ void Pathfinder::resetNodes() {
 
 float Pathfinder::heuristic(Node* nodeA, Node* nodeB) {
 	return std::abs(nodeA->x - nodeB->x) + std::abs(nodeA->y - nodeB->y);
-	//return std::sqrt(std::pow(nodeA->x - nodeB->x, 2) + std::pow(nodeA->y - nodeB->y, 2));
 }
 
 std::vector<Node*> Pathfinder::reconstructPath(Node* current) {
 	std::vector<Node*> totalPath;
 	totalPath.push_back(current);
-	current->tile = ROBOT;
+	current->tile = ROBOT;  // Current at this point is the end node
 	// Backtrack to starting node
 	while (current->parent) {
 		current = current->parent;
@@ -218,10 +217,9 @@ void Pathfinder::run() {
 				int currX = event.mouseMove.x / tileWidth;
 				int currY = event.mouseMove.y / tileHeight;
 				// Check that the hovered tile is different to the previously hovered node
-				if (highlightedTile.x != currX || highlightedTile.y != currY) {
+				if (highlightedNode->x != currX || highlightedNode->y != currY) {
 					// Update which tile is being hovered
-					highlightedTile.x = currX;
-					highlightedTile.y = currY;
+					highlightedNode = getNode(currX, currY);
 				}
 			}
 			else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -236,10 +234,9 @@ void Pathfinder::run() {
 					if (!path.empty()) {
 						std::cout << "Found path...\n";
 						startNode = endNode;
-						startNode->tile = 'R';
 					}
 					else {
-						std::cout << "Failed to find a path...\n";
+						std::cout << "Failed to find a path... I suck :(\n";
 					}
 				}
 			}
@@ -266,6 +263,5 @@ Pathfinder::Pathfinder() {
 	window.create(sf::VideoMode(width, height), "Pathfinder", sf::Style::Titlebar | sf::Style::Close);
 	rectangleSize = sf::Vector2f((float)tileWidth - 2, (float)tileHeight - 2);
 	startNode = nodes[1 * (width / tileWidth) + 1];
-	highlightedTile.x = -1;
-	highlightedTile.y = -1;
+	highlightedNode = nodes[0];
 }

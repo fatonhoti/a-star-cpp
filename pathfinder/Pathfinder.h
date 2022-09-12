@@ -31,19 +31,13 @@ struct Tile {
 
 class Pathfinder {
 private:
-	int width;
-	int height;
-	int tileWidth;
-	int tileHeight;
-	int hTiles;
-	int vTiles;
-	std::vector<Node*> nodes;
-	std::vector<Node*> path;
+	int width, height;
+	int tileWidth, tileHeight;
+	int hTiles, vTiles;
+	std::vector<Node*> nodes, path;
 	sf::RenderWindow window;
 	sf::Vector2f rectangleSize;
-	Node* startNode;
-	Node* endNode;
-	Tile highlightedTile;
+	Node* startNode, *endNode, *highlightedNode;
 public:
 	void loadTileMap();
 	sf::Color getColor(char);
